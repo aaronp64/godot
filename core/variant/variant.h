@@ -843,7 +843,31 @@ public:
 	String get_construct_string() const;
 	static void construct_from_string(const String &p_string, Variant &r_value, ObjectConstruct p_obj_construct = nullptr, void *p_construct_ud = nullptr);
 
-	void operator=(const Variant &p_variant); // only this is enough for all the other types
+	template <typename T>
+	void operator=(const T &p_other) {
+		*this = Variant(p_other);
+	}
+
+#define SIMPLE_TYPE_ASSIGN(m_type, m_variant_type, m_data_name) \
+	void operator=(m_type p_other) {                            \
+		clear();                                                \
+		type = m_variant_type;                                  \
+		m_data_name = p_other;                                  \
+    }                                                           \
+
+	SIMPLE_TYPE_ASSIGN(bool, BOOL, _data._bool)
+	SIMPLE_TYPE_ASSIGN(int64_t, INT, _data._int)
+	SIMPLE_TYPE_ASSIGN(int32_t, INT, _data._int)
+	SIMPLE_TYPE_ASSIGN(int16_t, INT, _data._int)
+	SIMPLE_TYPE_ASSIGN(uint64_t, INT, _data._int)
+	SIMPLE_TYPE_ASSIGN(uint32_t, INT, _data._int)
+	SIMPLE_TYPE_ASSIGN(uint16_t, INT, _data._int)
+	SIMPLE_TYPE_ASSIGN(uint8_t, INT, _data._int)
+	SIMPLE_TYPE_ASSIGN(float, FLOAT, _data._float)
+	SIMPLE_TYPE_ASSIGN(double, FLOAT, _data._float)
+#undef SIMPLE_TYPE_ASSIGN
+
+	void operator=(const Variant &p_variant);
 	void operator=(Variant &&p_variant) {
 		if (unlikely(this == &p_variant)) {
 			return;
