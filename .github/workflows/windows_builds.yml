@@ -116,7 +116,6 @@ jobs:
           Remove-Item bin/* -Include *.exp,*.lib,*.pdb -Force
 
       - name: Upload artifact
-        if: matrix.compiler == 'msvc'
         uses: ./.github/actions/upload-artifact
         with:
           name: ${{ matrix.cache-name }}
